@@ -70,20 +70,50 @@ Aisys    |2     |  0.979   | 120.000 |1769.63|2099.780|
 | **Test6** | **Execution Time**:<br>1157ms<br>(657ms with SIMD)<br><br>**Parameters**:<br>TargetNum=15<br>Score=0.8<br>Tolerance Angle=180<br>Min Reduced Area=256 | <img src="https://github.com/DennisLiu1993/Fastest_Image_Pattern_Matching/blob/main/Result%20Images/Result6.jpg" alt="Test 6 Result" width="800"> |
 | **Test7** | **Execution Time**:<br>18ms<br><br>**Parameters**:<br>TargetNum=100<br>Score=0.5<br>Tolerance Angle=0<br>MaxOverlap=0.5<br>Min Reduced Area=1024 | <img src="https://github.com/DennisLiu1993/Fastest_Image_Pattern_Matching/blob/main/Result%20Images/Result9.jpg" alt="Test 7 Result" width="800"> |
 
-# Steps to build this project
-1.	Download Visual Studio 2017 or newer versions
-2.	Check on the option of "x86 and x64 version of C++ MFC"
-3.	Install
-4.	Open MatchTool.vcxproj
-5.	Upgrade if it is required
-6.	Open this project's property page
-7.	Modified "General-Output Directory" to the .exe directory you want (usually the directory where your opencv_worldXX.dll locates)
-8.	Choose the SDK version you have in "General-Windows SDK Version"
-9.	Choose the right toolset you have in "General-Platform Toolset" (for me, it is Visual Studio 2017 (v141))
-10.	Go to "VC++ Directories", and type in "Include Directories" for your own OpenCV (e.g. C:\OpenCV3.1\opencv\build\include or C:\OpenCV4.0\opencv\build\include)
-11.	Type in "Library Directories" for your own OpenCV's library path (the directory where your opencv_worldXX.lib locates)
-12.	Go to "Linker-Input", and type in library name (e.g. opencv_world310d_vs2017.lib or opencv_world401d.lib)
-13.	Make sure that your opencv_worldXX.dll and MatchTool.Lang are in the same directory as .exe of this project
+# Quick Start (Cross-Platform)
+
+## Auto-Install Dependencies & Build
+```bash
+# 1. Install dependencies automatically
+./install_dependencies.sh
+
+# 2. Build with one command
+./build.sh
+
+# 3. Run test (Linux/macOS)
+cd build && ./MatchTool_test
+```
+
+## Manual Build
+
+### Windows (Visual Studio + MFC)
+1. Download Visual Studio 2017 or newer
+2. Check "x86 and x64 version of C++ MFC" during installation
+3. Open MatchTool.vcxproj
+4. Configure OpenCV paths in project properties
+5. Build and run
+
+### Linux/macOS (Command Line)
+```bash
+# Install dependencies
+# Linux: sudo apt install libopencv-dev
+# macOS: brew install opencv
+
+# Build
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+
+# Test
+./MatchTool_test
+```
+
+# Project Features
+- ✅ **Windows**: Full MFC GUI application
+- ✅ **Linux/macOS**: Core library + command-line test
+- ✅ **Auto-install**: Detects and installs OpenCV automatically
+- ✅ **Cross-platform**: Same codebase, different outputs per platform
+- ✅ **SIMD Optimized**: SSE2 acceleration for image processing
 
 # Adaptation for OpenCV4.X
 1.Select Debug_4.X or Release_4.X in "Solution Configuration"

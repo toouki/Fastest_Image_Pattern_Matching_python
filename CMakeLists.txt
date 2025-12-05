@@ -50,12 +50,62 @@ else()
         MatchTool/test_main.cpp
     )
     
-    target_link_libraries(${project_name}_test PRIVATE ${project_name} opencv_core opencv_imgproc opencv_highgui)
+    # Link OpenCV for test executable will be handled below
 endif()
 
-# Find OpenCV
-find_package(OpenCV CONFIG REQUIRED)
+# Find OpenCV - with helpful error messages
+find_package(OpenCV QUIET)
+
+# Set a unified variable for OpenCV availability
+set(OPENCV_AVAILABLE FALSE)
+set(OPENCV_LIBS_TO_USE "")
+set(OPENCV_INCS_TO_USE "")
+
+if(OpenCV_FOUND)
+    message(STATUS "Found OpenCV: ${OpenCV_VERSION}")
+    set(OPENCV_AVAILABLE TRUE)
+    set(OPENCV_LIBS_TO_USE ${OpenCV_LIBRARIES})
+    set(OPENCV_INCS_TO_USE ${OpenCV_INCLUDE_DIRS})
+else()
+    message(STATUS "OpenCV not found in standard locations")
+    message(STATUS "Trying alternative search methods...")
+    
+    # Try alternative find methods
+    find_package(PkgConfig QUIET)
+    if(PkgConfig_FOUND)
+        pkg_check_modules(OPENCV QUIET opencv4)
+        if(NOT OPENCV_FOUND)
+            pkg_check_modules(OPENCV QUIET opencv)
+        endif()
+        
+        if(OPENCV_FOUND)
+            message(STATUS "Found OpenCV via pkg-config: ${OPENCV_VERSION}")
+            set(OPENCV_AVAILABLE TRUE)
+            set(OPENCV_LIBS_TO_USE ${OPENCV_LIBRARIES})
+            set(OPENCV_INCS_TO_USE ${OPENCV_INCLUDE_DIRS})
+        endif()
+    endif()
+endif()
+
+# If still not found, provide helpful installation instructions
+if(NOT OPENCV_AVAILABLE)
+    message(FATAL_ERROR "\nOpenCV not found! Please install OpenCV first:\n"
+        "  Linux:   ./install_dependencies.sh\n"
+        "           or: sudo apt install libopencv-dev\n"
+        "  macOS:    brew install opencv\n"
+        "  Windows:  vcpkg install opencv4[contrib]\n"
+        "\nOr run: ./install_dependencies.sh\n")
+endif()
 
 # Link OpenCV libraries
-target_link_libraries(${project_name} PRIVATE opencv_core opencv_imgproc opencv_highgui)
+if(WIN32)
+    target_link_libraries(${project_name} PRIVATE opencv_core opencv_imgproc opencv_highgui)
+else()
+    target_link_libraries(${project_name} PRIVATE ${OPENCV_LIBS_TO_USE})
+    target_include_directories(${project_name} PRIVATE ${OPENCV_INCS_TO_USE})
+    
+    # Also link for test executable
+    target_link_libraries(${project_name}_test PRIVATE ${project_name} ${OPENCV_LIBS_TO_USE})
+    target_include_directories(${project_name}_test PRIVATE ${OPENCV_INCS_TO_USE})
+endif()
 
