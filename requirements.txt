@@ -1,0 +1,18 @@
+# Core dependencies for MatchTool Python bindings
+numpy>=1.15.0
+opencv-python>=4.0.0
+pybind11>=2.6.0
+setuptools>=45
+wheel
+
+# Development dependencies (optional)
+pytest>=6.0
+black
+flake8
+mypy
+sphinx
+sphinx-rtd-theme
+
+# Build dependencies
+cmake>=3.11
+pkg-config
