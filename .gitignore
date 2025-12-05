@@ -48,3 +48,5 @@ Include/
 *.pdb
 *.aps
 *.md
+build
+.vscode
